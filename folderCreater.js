@@ -49,6 +49,7 @@ function fileUpdater(filePath,playerDataObj)
     fs.writeFileSync(filePath,JSON.stringify(playerObjArr));
 }
 
+// use exel module to create the player workbook
 function excelReader(filePath) {
     // file -> read -> workbook
     let wb = xlsx.readFile(filePath);

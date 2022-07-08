@@ -6,6 +6,7 @@ const folderCreater=require("./folderCreater");
 
 // let url="https://www.espncricinfo.com/series/indian-premier-league-2022-1298423/gujarat-titans-vs-rajasthan-royals-final-1312200/full-scorecard";
 
+// get the link of each match scorecard and get the HTML of the page
 function extractPlayerData(url)
 {
     request(url,(err,response,body)=>{
@@ -28,6 +29,7 @@ function getPlayerStat(playerStat){
     // let teamArr=document.querySelectorAll(".ds-text-tight-l.ds-font-bold");
     // console.log(teamOneName);
     // console.log(teamTwoName);
+    // get both team tables
     let bothTeamData=document.querySelectorAll(".ds-bg-fill-content-prime.ds-rounded-lg");
     // let teamOneContent=bothTeamData[0].innerHTML;
     // let teamTwoContent=bothTeamData[1].innerHTML;
@@ -36,8 +38,11 @@ function getPlayerStat(playerStat){
     let venue=document.querySelector(".ds-text-tight-m.ds-font-regular.ds-text-ui-typo-mid").textContent;
     // console.log(venue);
     let result=document.querySelector(".ds-text-tight-m.ds-font-regular.ds-truncate.ds-text-typo-title").textContent;
+    // get team 1 table
     let teamOneName=bothTeamData[0].querySelector(".ds-py-3>.ds-text-tight-s.ds-font-bold.ds-uppercase").textContent.split("INNINGS")[0].trim();
+    // get team 2 table
     let teamTwoName=bothTeamData[1].querySelector(".ds-py-3>.ds-text-tight-s.ds-font-bold.ds-uppercase").textContent.split("INNINGS")[0].trim();
+    // parse through both team data and put the data in their corresponding excel file
     teamParser(bothTeamData[0],teamOneName,teamTwoName,venue,result);
     teamParser(bothTeamData[1],teamTwoName,teamOneName,venue,result);
 
@@ -58,6 +63,7 @@ function teamParser(teamData,myTeam,opponentTeam,venue,result)
             let fours=cols[5].textContent;
             let sixes=cols[6].textContent;
             let sr=cols[7].textContent;
+            // get the data for each player and create folder for that player
             // console.log(playerName+" "+runs+" "+balls+" "+fours+" "+sixes+" "+sr);
             let playerDataObj={
                 playerName,runs,balls,fours,sixes,sr,opponentTeam,result,venue
@@ -76,7 +82,9 @@ function teamAndPlayerFolderCreater(teamName,playerName,playerDataObj)
     folderCreater.dirCreater(teamPath);
     // create player .json file to store its data
     // if file present just update the data else create the file and then update the data
+    // once created team folder create the Ecel file for the particular folder insde team folder
     let playerPath=path.join(teamPath,playerName+".xlsx");
+    // then put the data of each player in their corresponding file
     folderCreater.fileHandler(playerPath,playerDataObj);
 }
 
